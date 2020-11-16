@@ -1,7 +1,9 @@
 from flask import Flask, jsonify, request
-from cinemapp_db import getUsersList, createUser, validLogin
+from flask import json
+from cinemapp_db import getUsersList, createUser, validLogin, \
+                        createMovie, getMovies, getMovieById
 
-enableDebug = False
+enableDebug = True
 app = Flask(__name__)
 
 @app.route("/api/v1/users", methods=["GET", "POST"])
@@ -20,6 +22,24 @@ def users():
             response = jsonify({"code": "error"})
     
         return response
+
+@app.route("/api/v1/movies", methods=["GET", "POST"])
+@app.route("/api/v1/movies/<int:id>", methods=["GET"])
+def movies(id = None):
+    if request.method == "GET":
+        if id is None:
+            return jsonify({"movies": getMovies()})
+        else:
+            return jsonify({"movie": getMovieById(id)})
+    if request.method == "POST" and request.is_json:
+        try:
+            if createMovie(request.get_json()):
+                return jsonify({"code": "ok"})
+            
+            return jsonify({"code": "invalid"})
+        except:
+            return jsonify({"code": "error"})
+        
 
 @app.route("/api/v1/login", methods=["POST"])
 def login():

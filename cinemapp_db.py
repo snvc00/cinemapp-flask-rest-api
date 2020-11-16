@@ -40,4 +40,53 @@ def validLogin(email, password):
         return id[0], True
         
     return None, False
+
+def createMovie(movie):
+    query = "INSERT INTO movie \
+            (title, view_date, image, director, year, userId) \
+            VALUES (%s, %s, %s, %s, %s, %s)"
+    cursor.execute(query, 
+    (movie["title"], movie["view_date"],  movie["image"], movie["director"], movie["year"], movie["userId"]))
+    cinemapp.commit()
+    if cursor.rowcount:
+        return True;
     
+    return False;
+
+def getMovies():
+    query = "SELECT id, title, view_date, image, director, year, userId FROM movie";
+    cursor.execute(query)
+    movies = []
+    for row in cursor.fetchall():
+        movie = {
+            "id": row[0],
+            "title": row[1],
+            "view_date": row[2],
+            "image": row[3],
+            "director": row[4],
+            "year": row[5],
+            "userdId": row[6]
+        }
+        movies.append(movie)
+    
+    return movies
+
+def getMovieById(id):
+    query = "SELECT * FROM movie WHERE id = %s"
+    cursor.execute(query, (id,))
+    movie = {}
+
+    row = cursor.fetchone()
+    if row:
+        movie["id"] = row[0] 
+        movie["title"] = row[1] 
+        movie["view_date"] = row[2] 
+        movie["image"] = row[3] 
+        movie["director"] = row[4] 
+        movie["year"] = row[5] 
+        movie["rate"] = row[6] 
+        movie["favorite"] = row[7] 
+        movie["review"] = row[8] 
+        movie["shared"] = row[9] 
+    
+    return movie
