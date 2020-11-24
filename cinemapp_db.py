@@ -90,3 +90,38 @@ def getMovieById(id):
         movie["shared"] = row[9] 
     
     return movie
+
+def modifyMovie(id, column, newValue):
+    query = f"UPDATE movie SET {column} = %s WHERE id = %s"
+    cursor.execute(query, (newValue, id))
+    cinemapp.commit()
+
+    return bool(cursor.rowcount)
+
+def deleteMovie(id):
+    query = f"DELETE FROM movie WHERE id = %s"
+    cursor.execute(query, (id,))
+    cinemapp.commit()
+
+    return bool(cursor.rowcount)
+
+def getUserMovies(id):
+    query = "SELECT * FROM movie WHERE userId = %s"
+    cursor.execute(query, (id,))
+    movies = []
+    for row in cursor.fetchall():
+        movie = {
+            "id": row[0], 
+            "title": row[1],
+            "view_date": row[2], 
+            "image": row[3],
+            "director": row[4], 
+            "year": row[5],
+            "rate": row[6],
+            "favorite": row[7],
+            "review": row[8], 
+            "shared": row[9] 
+        }
+        movies.append(movie)
+    
+    return movies
