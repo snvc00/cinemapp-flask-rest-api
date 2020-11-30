@@ -32,9 +32,9 @@ def users(id=None):
 def movies(id = None):
     if request.method == "GET":
         if id is None:
-            return jsonify({"movies": getMovies()})
+            return jsonify(getMovies())
         else:
-            return jsonify({"movie": getMovieById(id)})
+            return jsonify(getMovieById(id))
     if request.method == "POST" and request.is_json:
         try:
             if createMovie(request.get_json()):
